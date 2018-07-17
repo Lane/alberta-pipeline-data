@@ -23,8 +23,10 @@ def storeValue(id, t, val):
       releases[id][t] += val
     else:
       releases[id][t] = val
+    releases['count'] += 1
   else:
     releases[id] = {}
+    releases[id]['count'] = 1
     releases[id][t] = val
 
 # takes a type and row data to store in the releases dictionary
