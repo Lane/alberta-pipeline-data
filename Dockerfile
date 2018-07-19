@@ -36,4 +36,9 @@ RUN curl -sL https://deb.nodesource.com/setup_7.x | bash - && \
     npm install -g mapshaper@0.4.60 geojson-polygon-labels@1.2.1
 
 # Install Python packages
-RUN pip install csvkit
+RUN pip3 install csvkit
+
+WORKDIR /App
+
+ENTRYPOINT ["/usr/bin/make"]
+

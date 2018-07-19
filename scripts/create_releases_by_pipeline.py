@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import csv
 import json
 import sys
@@ -6,12 +6,12 @@ import sys
 if len(sys.argv) == 2:
   csvfile = sys.argv[1]
 else:
-  print 'Incorrect number of arguments, must provide a csv file'
+  print('Incorrect number of arguments, must provide a csv file')
   sys.exit(1)  # abort because of error
 
 release_types = open('data/release_types.json')
 inputfile = csv.reader(open(csvfile,'r'))
-outputfile = open('releases_by_pipeline.csv','w')
+outputfile = open('./build/data/releases_by_pipeline.csv','w')
 releases = {}
 keyIndex = {}
 TYPES = json.loads(release_types.read())
@@ -23,7 +23,7 @@ def storeValue(id, t, val):
       releases[id][t] += val
     else:
       releases[id][t] = val
-    releases['count'] += 1
+    releases[id]['count'] += 1
   else:
     releases[id] = {}
     releases[id]['count'] = 1
@@ -54,7 +54,7 @@ def normalizeVolume(val, unit):
       volume = float(val) * 1
     else:
       volume = float(val) * 1
-  except ValueError,e:
+  except ValueError:
       volume = -1
   return(volume)
 
@@ -66,17 +66,20 @@ def getHeaderRow():
     keyIndex[k] = i
     headerRow.append(k)
     i+=1
+  headerRow.append('count')
   headerRow.append('total_release')
   return headerRow
 
 # gets a row for the csv based on the data
 def getRow(id, data):
-  row = [None] * (len(TYPES)+2)
+  row = [None] * (len(TYPES)+3)
   row[0] = id
   total = 0
   for k, v in data.items():
-    total += v
-    row[keyIndex[k]] = v
+    if k != 'count':
+      total += v
+      row[keyIndex[k]] = v
+  row[len(row)-2] = data['count']
   row[len(row)-1] = total
   return row
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import csv
 import json
 import sys
@@ -6,12 +6,12 @@ import sys
 if len(sys.argv) == 2:
   csvfile = sys.argv[1]
 else:
-  print 'Incorrect number of arguments, must provide a csv file'
+  print('Incorrect number of arguments, must provide a csv file')
   sys.exit(1)  # abort because of error
 
 substance_types = open('data/pipeline_substances.json')
 inputfile = csv.reader(open(csvfile,'r'))
-outputfile = open('pipeline_substances.csv','w')
+outputfile = open('./build/data/pipeline_substances.csv','w')
 substances = {}
 types = json.loads(substance_types.read())
 substanceCol = 27
@@ -25,8 +25,8 @@ def updateSubstance(t, row):
       substances[index]['count']+=1
     else:
       substances[index] = { 'km': float(row[kmCol]), 'count': 1 }
-  except ValueError,e:
-    print 'index not found for', t
+  except ValueError:
+    index = -1
 
 # get the header row for the csv
 def getHeaderRow():
@@ -41,7 +41,7 @@ def getRow(t):
     row[0] = t
     row[1] = round(substances[index]['km'])
     row[2] = substances[index]['count']
-  except ValueError,e:
+  except ValueError:
     row = []
   return row
 
