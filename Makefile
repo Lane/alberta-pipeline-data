@@ -11,15 +11,24 @@ data_pipelines = data/pipelines.tar.gz
 download_files = shape-pipelines data-incidents data-pipelines
 COMPRESSED_FILES = $(foreach t, $(download_files), tmp/$(t).tar.gz)
 
-.PHONY: all clean data
+.PHONY: all clean tiles data
 
-all: data
+all: data tiles
 
 data: build/data/releases_by_pipeline.csv build/data/pipeline_substances.csv
+
+tiles: build/pipelines.mbtiles build/data/releases_by_pipeline.csv
+	tile-join -o ./build/tileset \
+		--no-tile-size-limit \
+		-c ./build/data/releases_by_pipeline.csv \
+		./build/pipelines.mbtiles
 
 clean:
 	rm -rf ./tmp
 	rm -rf ./build
+
+build/pipelines.mbtiles: build/geojson/pipelines.geojson
+	tippecanoe -o ./build/pipelines.mbtiles -zg --drop-densest-as-needed ./build/geojson/pipelines.geojson
 
 build/geojson/pipelines.geojson: tmp/shape-pipelines.tar.gz
 	mkdir -p build/geojson
