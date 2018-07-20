@@ -12,7 +12,9 @@ else:
 release_types = open('data/release_types.json')
 inputfile = csv.reader(open(csvfile,'r'))
 outputfile = open('./build/data/releases_by_pipeline.csv','w')
+outputfile2 = open('./build/data/releases_by_substance.csv','w')
 releases = {}
+totals = {}
 keyIndex = {}
 TYPES = json.loads(release_types.read())
 
@@ -24,10 +26,16 @@ def storeValue(id, t, val):
     else:
       releases[id][t] = val
     releases[id]['count'] += 1
+    releases[id]['total'] += val
   else:
     releases[id] = {}
     releases[id]['count'] = 1
+    releases[id]['total'] = val
     releases[id][t] = val
+  if t in totals:
+    totals[t] += val
+  else:
+    totals[t] = val
 
 # takes a type and row data to store in the releases dictionary
 def collectType(t, r):
@@ -43,7 +51,7 @@ def collectType(t, r):
   if index > 0:
     volume = normalizeVolume(r[index+1],r[index+2])
     if volume > -1:
-      storeValue(r[0], t, volume)
+      storeValue(r[0], t, round(volume,2))
 
 # converts the value to m^3
 def normalizeVolume(val, unit):
@@ -76,11 +84,10 @@ def getRow(id, data):
   row[0] = id
   total = 0
   for k, v in data.items():
-    if k != 'count':
-      total += v
+    if k != 'count' and k != 'total':
       row[keyIndex[k]] = v
   row[len(row)-2] = data['count']
-  row[len(row)-1] = total
+  row[len(row)-1] = data['total']
   return row
 
 i=0
@@ -94,3 +101,14 @@ for k, v in releases.items():
   row = getRow(k, v)
   wr.writerow(row)
 outputfile.close()
+
+wr = csv.writer(outputfile2, quoting=csv.QUOTE_MINIMAL)
+wr.writerow([ 'id', 'substance', 'amount_released' ])
+for k, v in totals.items():
+  wr.writerow([ k, TYPES[k], v])
+outputfile2.close()
+
+json = json.dumps(releases)
+f = open("./build/data/releases.json","w")
+f.write(json)
+f.close()
