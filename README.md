@@ -57,3 +57,12 @@ To build the vector tiles, run `make tiles`.  Or, if using the Docker image, run
 ```bash
 $: docker run -i -v ${PWD}:/App alberta-pipelines tiles
 ```
+
+## TODO
+- Pipeline construction by year
+- Longest pipelines (compared to Trans Mountain )
+
+
+## Issues with the data
+
+- The license approval date is sometimes later than the permit approval date
