@@ -21,7 +21,7 @@ To build the data, run `make data`.  Or, if using the Docker image, run:
 $: docker run -i -v ${PWD}:/App alberta-pipelines data
 ```
 
-#### `incidents.csv`
+#### `releases.csv`
 
 Contains all pipeline "release" incidents from 1975 - 2013
 
@@ -47,8 +47,27 @@ Contains an overview of pipelines in Alberta, brokend down by substance type.
 
 #### `releases_by_pipeline.csv`
 
+Contains releases broken down by pipelines measured in m^3.
+
+#### `releases_by_substance.csv`
+
 Contains releases broken down by substance measured in m^3.
 
+### GeoJSON
+
+To build the data, run `make geojson`.  Or, if using the Docker image, run:
+
+```bash
+$: docker run -i -v ${PWD}:/App alberta-pipelines data
+```
+
+#### `pipelines.geojson`
+
+GeoJSON file of Alberta pipelines
+
+#### `releases.geojson`
+
+GeoJSON file of Alberta pipelines incidents from 1975-2013
 
 ### Map Tiles
 
@@ -58,10 +77,17 @@ To build the vector tiles, run `make tiles`.  Or, if using the Docker image, run
 $: docker run -i -v ${PWD}:/App alberta-pipelines tiles
 ```
 
-## TODO
-- Pipeline construction by year
-- Longest pipelines (compared to Trans Mountain )
+#### `incidents.mbtiles`
 
+Tileset generated from releases.geojson
+
+#### `pipelines.mbtiles`
+
+Tileset generated from pipelines.geojson
+
+### Deploy
+
+TODO
 
 ## Issues with the data
 

@@ -17,7 +17,7 @@ ENV LC_ALL en_US.UTF-8
 
 # Create a directory and copy in all files
 RUN mkdir -p /tmp/tippecanoe-src
-RUN git clone -b 1.27.8 https://github.com/mapbox/tippecanoe.git /tmp/tippecanoe-src
+RUN git clone -b 1.31.0 https://github.com/mapbox/tippecanoe.git /tmp/tippecanoe-src
 WORKDIR /tmp/tippecanoe-src
 
 # Build tippecanoe

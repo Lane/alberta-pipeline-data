@@ -41,10 +41,11 @@ build/incidents.mbtiles: build/geojson/releases.geojson
 build/geojson/pipelines.geojson: tmp/shape-pipelines.tar.gz build/data/releases_by_pipeline.csv
 	mkdir -p build/geojson
 	tar xvf tmp/shape-pipelines.tar.gz -C ./tmp
-	mapshaper -i ./tmp/pipelines/*.shp \
+	mapshaper ./tmp/pipelines/*.shp \
 		-proj wgs84 \
 		-drop fields=LINE_NO,LIC_LI_NO,PL_SPEC_ID,FRM_LOC,TO_LOC,PIPTECHSTD,PLLICSEGID,BA_CODE,SEG_LENGTH,COMP_NAME,IS_NEB,H2S_CONTNT,OUT_DIAMET,WALL_THICK,PIPE_TYPE,PIPE_GRADE,PIP_MATERL,PIPE_MAOP,STRESSLEVL,JOINTMETHD,INT_PROTEC,CROSS_TYPE,FLD_CTR_NM,ORIGPSPPID,ORIGLIN_NO,TEMPSURFPL,GEOM_SRCE,SHAPE_LEN \
 		-filter '"crude oil,lvp products,salt water,fresh water,oil-well effluent".indexOf(SUBSTANCE.toLowerCase()) > -1' \
+		-each 'this.id=parseInt(LICENCE_NO)' \
 		-each 'app_date=(Date.parse(LICAPPDATE)>0?Date.parse(LICAPPDATE):Date.parse(PERMT_APPR))' \
 		-rename-fields to=TO_FAC,from=FROM_FAC,status=SEG_STATUS,substance=SUBSTANCE \
 		-o ./build/geojson/pipelines-tmp.geojson format=geojson precision=0.001
