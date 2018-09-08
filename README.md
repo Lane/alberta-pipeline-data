@@ -89,6 +89,10 @@ Tileset generated from pipelines.geojson
 
 TODO
 
-## Issues with the data
+## Data Unknowns
 
-- The license approval date is sometimes later than the permit approval date
+- What is the difference between licence number (`LICENCE_NO`) and original licence number (`ORIG_LICNO`)?
+- Why do multiple features in the shapefiles have the same licence number, but different geometries, approval dates, and other dates?
+- Should pipelines with the same licence number be counted as the same pipeline, or as different pipelines?
+  - Looking at the data a bit closer, it seems like licences have multiple lines, and the unique identifier would be {{LICENCE_NO}}-{{LINE_NO}}, which is used in the field `LIC_LI_NO`.  Releases have no line number associated with them, so we can't highlight the specific line that leaked.
+- Why are several dates missing for pipelines?
