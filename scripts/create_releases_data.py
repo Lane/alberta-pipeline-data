@@ -20,6 +20,7 @@ TYPES = json.loads(release_types.read())
 
 # save the value in the releases dictionary
 def storeValue(id, t, val):
+  # Collect data for releases JSON output
   if id in releases:
     if t in releases[id]:
       releases[id][t] += val
@@ -32,10 +33,20 @@ def storeValue(id, t, val):
     releases[id]['count'] = 1
     releases[id]['total'] = val
     releases[id][t] = val
+  # Collect data for substances CSV output
   if t in totals:
-    totals[t] += val
+    totals[t]['amount'] += val
+    if val > totals[t]['max']:
+      totals[t]['max'] = val
+    if val < totals[t]['min']:
+      totals[t]['min'] = val
+    totals[t]['count'] += 1
   else:
-    totals[t] = val
+    totals[t] = {}
+    totals[t]['amount'] = val
+    totals[t]['max'] = val
+    totals[t]['min'] = val
+    totals[t]['count'] = 1
 
 # takes a type and row data to store in the releases dictionary
 def collectType(t, r):
@@ -103,9 +114,9 @@ for k, v in releases.items():
 outputfile.close()
 
 wr = csv.writer(outputfile2, quoting=csv.QUOTE_MINIMAL)
-wr.writerow([ 'id', 'substance', 'amount_released' ])
+wr.writerow([ 'id', 'substance', 'amount_released', 'min', 'max', 'avg', 'incidents' ])
 for k, v in totals.items():
-  wr.writerow([ k, TYPES[k], v])
+  wr.writerow([ k, TYPES[k], v['amount'], v['min'], v['max'], (v['amount']/v['count']), v['count']])
 outputfile2.close()
 
 json = json.dumps(releases)

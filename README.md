@@ -21,7 +21,7 @@ To build the data, run `make data`.  Or, if using the Docker image, run:
 $: docker run -i -v ${PWD}:/App alberta-pipelines data
 ```
 
-#### `incidents.csv`
+#### `releases.csv`
 
 Contains all pipeline "release" incidents from 1975 - 2013
 
@@ -47,8 +47,27 @@ Contains an overview of pipelines in Alberta, brokend down by substance type.
 
 #### `releases_by_pipeline.csv`
 
+Contains releases broken down by pipelines measured in m^3.
+
+#### `releases_by_substance.csv`
+
 Contains releases broken down by substance measured in m^3.
 
+### GeoJSON
+
+To build the data, run `make geojson`.  Or, if using the Docker image, run:
+
+```bash
+$: docker run -i -v ${PWD}:/App alberta-pipelines data
+```
+
+#### `pipelines.geojson`
+
+GeoJSON file of Alberta pipelines
+
+#### `releases.geojson`
+
+GeoJSON file of Alberta pipelines incidents from 1975-2013
 
 ### Map Tiles
 
@@ -58,11 +77,22 @@ To build the vector tiles, run `make tiles`.  Or, if using the Docker image, run
 $: docker run -i -v ${PWD}:/App alberta-pipelines tiles
 ```
 
-## TODO
-- Pipeline construction by year
-- Longest pipelines (compared to Trans Mountain )
+#### `incidents.mbtiles`
 
+Tileset generated from releases.geojson
 
-## Issues with the data
+#### `pipelines.mbtiles`
 
-- The license approval date is sometimes later than the permit approval date
+Tileset generated from pipelines.geojson
+
+### Deploy
+
+TODO
+
+## Data Unknowns
+
+- What is the difference between licence number (`LICENCE_NO`) and original licence number (`ORIG_LICNO`)?
+- Why do multiple features in the shapefiles have the same licence number, but different geometries, approval dates, and other dates?
+- Should pipelines with the same licence number be counted as the same pipeline, or as different pipelines?
+  - Looking at the data a bit closer, it seems like licences have multiple lines, and the unique identifier would be {{LICENCE_NO}}-{{LINE_NO}}, which is used in the field `LIC_LI_NO`.  Releases have no line number associated with them, so we can't highlight the specific line that leaked.
+- Why are several dates missing for pipelines?

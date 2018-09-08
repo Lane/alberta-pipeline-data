@@ -1,7 +1,7 @@
 
 bucket_url = https://s3.amazonaws.com/alberta-pipelines/etl/
 
-.PHONY: all clean tiles data geojson deploy
+.PHONY: all clean clean/build tiles data geojson deploy
 
 all: data tiles
 
@@ -13,9 +13,11 @@ geojson: build/geojson/pipelines.geojson build/geojson/releases.geojson
 
 deploy: tiles
 
-clean:
-	rm -rf ./tmp
+clean/build:
 	rm -rf ./build
+
+clean: clean/build
+	rm -rf ./tmp
 	
 # Creates the pipelines vector tiles from GeoJSON
 build/pipelines.mbtiles: build/geojson/pipelines.geojson
@@ -41,7 +43,7 @@ build/incidents.mbtiles: build/geojson/releases.geojson
 build/geojson/pipelines.geojson: tmp/shape-pipelines.tar.gz build/data/releases_by_pipeline.csv
 	mkdir -p build/geojson
 	tar xvf tmp/shape-pipelines.tar.gz -C ./tmp
-	mapshaper -i ./tmp/pipelines/*.shp \
+	mapshaper ./tmp/pipelines/*.shp \
 		-proj wgs84 \
 		-drop fields=LINE_NO,LIC_LI_NO,PL_SPEC_ID,FRM_LOC,TO_LOC,PIPTECHSTD,PLLICSEGID,BA_CODE,SEG_LENGTH,COMP_NAME,IS_NEB,H2S_CONTNT,OUT_DIAMET,WALL_THICK,PIPE_TYPE,PIPE_GRADE,PIP_MATERL,PIPE_MAOP,STRESSLEVL,JOINTMETHD,INT_PROTEC,CROSS_TYPE,FLD_CTR_NM,ORIGPSPPID,ORIGLIN_NO,TEMPSURFPL,GEOM_SRCE,SHAPE_LEN \
 		-filter '"crude oil,lvp products,salt water,fresh water,oil-well effluent".indexOf(SUBSTANCE.toLowerCase()) > -1' \

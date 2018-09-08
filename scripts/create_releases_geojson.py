@@ -121,6 +121,7 @@ def getFeature(row):
     print('error parsing coordinates on row: ',row)
     return(None)
   feature = {
+    'id': int(row[ROWMAP['id']]),
     'type': "Feature",
     'geometry': { 
       'type': "Point",
